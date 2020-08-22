@@ -22,7 +22,7 @@ public final class RiftCommand implements CommandExecutor {
             return false;
         }
 
-        if (args.length !=  1) {
+        if (args.length <= 0) {
             return false;
         }
 
@@ -33,13 +33,22 @@ public final class RiftCommand implements CommandExecutor {
                     sender.sendMessage(mode ? "Debug mode is enabled." : "Debug mode is disabled.");
                 }
 
-                this.plugin.debug(mode ? "Debug mode is enabled." : "Debug mode is disabled.");
+                this.plugin.info(mode ? "Debug mode is enabled." : "Debug mode is disabled.");
                 break;
             case "test":
-                this.plugin.redis().async("hub-1", "PING", "async" +
-                    ThreadLocalRandom.current().nextInt(0, 300));
-                this.plugin.redis().sync("hub-1", "PING", "sync" +
-                    ThreadLocalRandom.current().nextInt(0, 300));
+                if (args.length != 5) {
+                    sender.sendMessage("Usage: /rift test <-a:-s> <destination> <channel> <message>");
+                    return false;
+                }
+
+                if ("-a".equalsIgnoreCase(args[1])) {
+                    this.plugin.redis().async(args[2], args[3], args[4]);
+                } else if ("-s".equalsIgnoreCase(args[1])) {
+                    this.plugin.redis().sync(args[2], args[3], args[4]);
+                } else {
+                    sender.sendMessage("Usage: /rift test <-a:-s> <destination> <channel> <message>");
+                    return false;
+                }
                 break;
             default:
                 return false;
