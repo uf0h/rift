@@ -1,0 +1,5 @@
+name: Rift
+version: ${project.version}
+main: me.ufo.rift.Rift
+commands:
+  rift:
