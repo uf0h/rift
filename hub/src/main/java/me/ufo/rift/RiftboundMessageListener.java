@@ -13,8 +13,8 @@ public final class RiftboundMessageListener implements Listener {
     }
 
     @EventHandler
-    public void onRiftMessageRecieve(final RiftboundMessageEvent event) {
-        if (event.getChannel().equalsIgnoreCase("PING")) {
+    public void onRiftMessageReceive(final RiftboundMessageEvent event) {
+        if ("PING".equalsIgnoreCase(event.getChannel())) {
             this.plugin.info(
                 "Received riftboundmessage: {source: " + event.getSource() + ", " + event.getMessage() + "}"
             );
