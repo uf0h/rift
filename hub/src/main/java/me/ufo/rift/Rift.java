@@ -6,13 +6,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Rift extends JavaPlugin {
 
-    // Server name
-    private final String name = "hub-1";
-
-    // Debug
+    private final String name;
     private boolean debug;
 
     private Redis redis;
+
+    public Rift() {
+        this.saveDefaultConfig();
+        this.name = this.getConfig().getString("server-name");
+    }
 
     @Override
     public void onLoad() {

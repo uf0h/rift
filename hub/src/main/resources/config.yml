@@ -1,0 +1,8 @@
+redis:
+  host: "localhost"
+  port: 6379
+  auth:
+    enabled: false
+    password: "none"
+
+server-name: "hub-1"

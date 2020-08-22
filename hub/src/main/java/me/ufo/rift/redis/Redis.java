@@ -1,8 +1,10 @@
 package me.ufo.rift.redis;
 
 import java.io.Closeable;
+import java.time.Duration;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisFuture;
+import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 import me.ufo.rift.Rift;
@@ -10,17 +12,15 @@ import me.ufo.rift.Rift;
 public final class Redis implements Closeable {
 
     private final Rift plugin;
-
     private final RedisClient redisClient;
     private final StatefulRedisConnection<String, String> connection;
     private final StatefulRedisPubSubConnection<String, String> psConnection;
 
     public Redis(final Rift plugin) {
         this.plugin = plugin;
-        this.redisClient = RedisClient.create("redis://localhost");
+        this.redisClient = RedisClient.create(this.credentials());
         this.connection = this.redisClient.connect();
         this.psConnection = this.redisClient.connectPubSub();
-
         this.psConnection.addListener(new PubSubListener(this.plugin));
         this.psConnection.async().subscribe("rift:" + this.plugin.name());
     }
@@ -49,6 +49,20 @@ public final class Redis implements Closeable {
         return this.connection.sync().publish(
             "rift:" + destination, this.plugin.name() + "," + channel + "," + message
         );
+    }
+
+    private RedisURI credentials() {
+        final RedisURI credentials = new RedisURI(
+            this.plugin.getConfig().getString("redis.host"),
+            this.plugin.getConfig().getInt("redis.port"),
+            Duration.ofSeconds(30)
+        );
+
+        if (this.plugin.getConfig().getBoolean("redis.auth.enabled")) {
+            credentials.setPassword(this.plugin.getConfig().getString("redis.auth.password"));
+        }
+
+        return credentials;
     }
 
     @Override
