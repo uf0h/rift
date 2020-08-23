@@ -23,11 +23,8 @@ public final class PubSubListener implements RedisPubSubListener<String, String>
         if (messageParts.length >= 3) {
             final String source = Preconditions.checkNotNull(messageParts[0], "Source null");
             final String action = Preconditions.checkNotNull(messageParts[1], "Action null");
-            final String[] message = Preconditions.checkNotNull(Arrays.copyOfRange(messageParts, 2, messageParts.length), "Message null");
-
-            this.plugin.debug(
-                "Received message: {source: " + source +
-                    ", action: " + action + ", message: " + Arrays.toString(message) + "}"
+            final String[] message = Preconditions.checkNotNull(
+                Arrays.copyOfRange(messageParts, 2, messageParts.length), "Message null"
             );
 
             final RiftboundMessageEvent event = new RiftboundMessageEvent(source, action, message);
@@ -41,12 +38,16 @@ public final class PubSubListener implements RedisPubSubListener<String, String>
 
     @Override
     public void subscribed(final String channel, final long count) {
-        this.plugin.debug("Listener subscribed to channel: " + channel);
+        if (this.plugin.debug()) {
+            this.plugin.info("Listener subscribed to channel: " + channel);
+        }
     }
 
     @Override
     public void unsubscribed(final String channel, final long count) {
-        this.plugin.debug("Listener unsubscribed from channel: " +  channel);
+        if (this.plugin.debug()) {
+            this.plugin.info("Listener unsubscribed from channel: " + channel);
+        }
     }
 
     @Override

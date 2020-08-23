@@ -16,11 +16,13 @@ public final class RiftboundMessageListener implements Listener {
     @EventHandler
     public void onRiftMessageReceive(final RiftboundMessageEvent event) {
         if (event.getSource().equalsIgnoreCase("rift:" + this.plugin.name())) {
-            this.plugin.debug(
-                "Received riftboundmessage from this server: {source: " + event.getSource() +
-                    ", action: " + event.getAction() +
-                    ", message: " + Arrays.toString(event.getMessage()) + "}"
-            );
+            if (this.plugin.debug()) {
+                this.plugin.info(
+                    "Received riftboundmessage from this server: {source: " + event.getSource() +
+                        ", action: " + event.getAction() +
+                        ", message: " + Arrays.toString(event.getMessage()) + "}"
+                );
+            }
             return;
         }
 

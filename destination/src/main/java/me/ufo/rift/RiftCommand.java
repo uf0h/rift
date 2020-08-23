@@ -53,6 +53,7 @@ public final class RiftCommand implements CommandExecutor {
                     return false;
                 }
                 break;
+            // temporary
             case "permtest":
                 if (args.length == 2) {
                     sender.sendMessage(args[1]);

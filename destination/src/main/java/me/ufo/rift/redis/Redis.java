@@ -29,7 +29,9 @@ public final class Redis implements Closeable {
     }
 
     public RedisFuture<Long> async(final String destination, final String action, final String message) {
-        this.plugin.debug("Publish async: (" + destination + ", " + action + ", " + message + ")");
+        if (this.plugin.debug()) {
+            this.plugin.info("Publish async: (" + destination + ", " + action + ", " + message + ")");
+        }
 
         if (this.connection == null) {
             this.plugin.severe("Async connection null");
@@ -42,7 +44,9 @@ public final class Redis implements Closeable {
     }
 
     public Long sync(final String destination, final String action, final String message) {
-        this.plugin.debug("Publish sync: (" + destination + ", " + action + ", " + message + ")");
+        if (this.plugin.debug()) {
+            this.plugin.info("Publish sync: (" + destination + ", " + action + ", " + message + ")");
+        }
 
         if (this.connection == null) {
             this.plugin.severe("Sync connection null");

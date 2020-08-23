@@ -49,12 +49,6 @@ public final class Rift extends JavaPlugin {
         this.redis.close();
     }
 
-    public void debug(final String message) {
-        if (this.debug) {
-            this.getLogger().info(message);
-        }
-    }
-
     public void info(final String message) {
         this.getLogger().info(message);
     }
@@ -63,13 +57,17 @@ public final class Rift extends JavaPlugin {
         this.getLogger().severe(message);
     }
 
-    public boolean toggleDebug() {
-        this.debug = !this.debug;
+    public String name() {
+        return this.name;
+    }
+
+    public boolean debug() {
         return this.debug;
     }
 
-    public String name() {
-        return this.name;
+    public boolean toggleDebug() {
+        this.debug = !this.debug;
+        return this.debug;
     }
 
     public Redis redis() {
