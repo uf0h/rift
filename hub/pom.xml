@@ -15,7 +15,7 @@
     </properties>
 
     <build>
-        <finalName>rift-${project.version}</finalName>
+        <finalName>rift-hub-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

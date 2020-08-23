@@ -7,10 +7,16 @@
     <groupId>me.ufo.rift</groupId>
     <artifactId>rift-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <modules>
+        <module>hub</module>
+        <module>destination</module>
+    </modules>
 
 </project>

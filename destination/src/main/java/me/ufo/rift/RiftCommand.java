@@ -1,6 +1,9 @@
 package me.ufo.rift;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -49,6 +52,26 @@ public final class RiftCommand implements CommandExecutor {
                     sender.sendMessage("Usage: /rift test <-a:-s> <destination> <action> <message>");
                     return false;
                 }
+                break;
+            case "permtest":
+                if (args.length == 2) {
+                    sender.sendMessage(args[1]);
+                    User user = null;
+                    try {
+                        user =
+                            LuckPermsProvider.get().getUserManager().loadUser(UUID.fromString(args[1])).get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    sender.sendMessage(user.getPrimaryGroup());
+                    return true;
+                }
+
+                final User user =
+                    LuckPermsProvider.get().getUserManager().getUser(((Player) sender).getUniqueId());
+
+                sender.sendMessage(user.getUsername());
+                sender.sendMessage(user.getPrimaryGroup());
                 break;
             default:
                 return false;

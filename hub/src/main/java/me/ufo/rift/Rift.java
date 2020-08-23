@@ -1,6 +1,7 @@
 package me.ufo.rift;
 
 import me.ufo.rift.redis.Redis;
+import me.ufo.rift.tasks.PingTask;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,6 +19,15 @@ public final class Rift extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        this.getLogger().info(
+            "\n       _  __ _   \n" +
+            "      (_)/ _| |  \n" +
+            "  _ __ _| |_| |_ \n" +
+            " | '__| |  _| __|    HUB SERVER: " + this.name + "\n" +
+            " | |  | | | | |_ \n" +
+            " |_|  |_|_|  \\__|\n"
+        );
+
         this.redis = new Redis(this);
     }
 
@@ -29,6 +39,9 @@ public final class Rift extends JavaPlugin {
         // Register event listeners
         final PluginManager pm = this.getServer().getPluginManager();
         pm.registerEvents(new RiftboundMessageListener(this), this);
+
+        // Register tasks
+        this.getServer().getScheduler().runTaskTimerAsynchronously(this, new PingTask(this), 20L, 60L);
     }
 
     @Override
