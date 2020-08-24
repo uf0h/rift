@@ -38,6 +38,7 @@ public final class RiftCommand implements CommandExecutor {
 
                 this.plugin.info(mode ? "Debug mode is enabled." : "Debug mode is disabled.");
                 break;
+
             case "test":
                 if (args.length != 5) {
                     sender.sendMessage("Usage: /rift test <-a:-s> <destination> <action> <message>");
@@ -53,6 +54,11 @@ public final class RiftCommand implements CommandExecutor {
                     return false;
                 }
                 break;
+
+            case "ping":
+                this.plugin.redis().async("all", "PING", this.plugin.response());
+                break;
+
             // temporary
             case "permtest":
                 if (args.length == 2) {
@@ -74,6 +80,7 @@ public final class RiftCommand implements CommandExecutor {
                 sender.sendMessage(user.getUsername());
                 sender.sendMessage(user.getPrimaryGroup());
                 break;
+
             default:
                 return false;
         }

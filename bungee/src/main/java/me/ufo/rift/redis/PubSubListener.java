@@ -25,7 +25,7 @@ public final class PubSubListener implements RedisPubSubListener<String, String>
             final String source = Preconditions.checkNotNull(messageParts[0], "Source null");
             final String action = Preconditions.checkNotNull(messageParts[1], "Action null");
             String[] message = {""};
-
+            // TODO: possible seperate event for actions
             if (messageParts.length >= 3) {
                 message = Preconditions.checkNotNull(
                     Arrays.copyOfRange(messageParts, 2, messageParts.length), "Message null"
@@ -33,9 +33,9 @@ public final class PubSubListener implements RedisPubSubListener<String, String>
             }
 
             final RiftboundMessageEvent event = new RiftboundMessageEvent(source, action, message);
-            this.plugin.getServer().getScheduler().runTask(this.plugin,
-                () -> this.plugin.getServer().getPluginManager().callEvent(event)
-            );
+            this.plugin.getProxy().getScheduler().schedule(this.plugin,
+                () -> this.plugin.getProxy().getPluginManager().callEvent(event),
+            0L, TimeUnit.SECONDS);
         } else {
             this.plugin.severe("Received badly formatted message: {" + rawMessage + "}");
         }

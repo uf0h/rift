@@ -20,12 +20,16 @@ public final class PubSubListener implements RedisPubSubListener<String, String>
     public void message(final String listenerChannel, final String rawMessage) {
         final String[] messageParts = this.comma.split(rawMessage);
 
-        if (messageParts.length >= 3) {
+        if (messageParts.length >= 2) {
             final String source = Preconditions.checkNotNull(messageParts[0], "Source null");
             final String action = Preconditions.checkNotNull(messageParts[1], "Action null");
-            final String[] message = Preconditions.checkNotNull(
-                Arrays.copyOfRange(messageParts, 2, messageParts.length), "Message null"
-            );
+            String[] message = {""};
+
+            if (messageParts.length >= 3) {
+                message = Preconditions.checkNotNull(
+                    Arrays.copyOfRange(messageParts, 2, messageParts.length), "Message null"
+                );
+            }
 
             final RiftboundMessageEvent event = new RiftboundMessageEvent(source, action, message);
             this.plugin.getServer().getScheduler().runTask(this.plugin,

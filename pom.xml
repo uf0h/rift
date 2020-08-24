@@ -17,6 +17,7 @@
     <modules>
         <module>hub</module>
         <module>destination</module>
+        <module>bungee</module>
     </modules>
 
 </project>

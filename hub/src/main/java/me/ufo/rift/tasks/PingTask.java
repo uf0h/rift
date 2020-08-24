@@ -12,9 +12,7 @@ public final class PingTask implements Runnable {
 
     @Override
     public void run() {
-        final String out =
-            this.plugin.getServer().getOnlinePlayers().size() + "," +
-                (this.plugin.getServer().hasWhitelist() ? "WHITELISTED" : "ONLINE");
+        final String out = this.plugin.response();
 
         this.plugin.redis().async("all", "PING", out);
     }

@@ -2,6 +2,7 @@ package me.ufo.rift.permission;
 
 import java.util.UUID;
 import me.ufo.rift.Rift;
+import me.ufo.rift.util.FastUUID;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.cacheddata.CachedPermissionData;
 
@@ -22,7 +23,7 @@ public enum PermissionProvider implements IPermissionProvider {
                 }
 
                 Rift.instance().redis()
-                    .async(source, "PLAYER_INFO_RESPONSE", u.getPrimaryGroup() + "," + priority);
+                    .async(source, "PLAYER_INFO_RESPONSE", FastUUID.toString(uuid) + "," + u.getPrimaryGroup() + "," + priority);
             });
         }
     };

@@ -23,7 +23,6 @@ public final class Redis implements Closeable {
         this.psConnection = this.redisClient.connectPubSub();
         this.psConnection.addListener(new PubSubListener(this.plugin));
         this.psConnection.async().subscribe(
-            "rift:bungee",
             "rift:" + this.plugin.name()
         );
     }
