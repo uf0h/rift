@@ -11,71 +11,79 @@ import me.ufo.rift.Rift;
 
 public final class Redis implements Closeable {
 
-    private final Rift plugin;
-    private final RedisClient redisClient;
-    private final StatefulRedisConnection<String, String> connection;
-    private final StatefulRedisPubSubConnection<String, String> psConnection;
+  private final Rift plugin;
+  private final RedisClient redisClient;
+  private final StatefulRedisConnection<String, String> connection;
+  private final StatefulRedisPubSubConnection<String, String> psConnection;
 
-    public Redis(final Rift plugin) {
-        this.plugin = plugin;
-        this.redisClient = RedisClient.create(this.credentials());
-        this.connection = this.redisClient.connect();
-        this.psConnection = this.redisClient.connectPubSub();
-        this.psConnection.addListener(new PubSubListener(this.plugin));
-        this.psConnection.async().subscribe(
-            "rift:" + this.plugin.name()
-        );
+  public Redis(final Rift plugin) {
+    this.plugin = plugin;
+    this.redisClient = RedisClient.create(this.credentials());
+    this.connection = this.redisClient.connect();
+    this.psConnection = this.redisClient.connectPubSub();
+    this.psConnection.addListener(new PubSubListener(this.plugin));
+    this.psConnection.async().subscribe(
+      "rift:" + this.plugin.name()
+    );
+  }
+
+  public RedisFuture<Long> async(final String destination, final String action, final String message) {
+    if (this.plugin.debug()) {
+      this.plugin.info("Publish async: (" + destination + ", " + action + ", " + message + ")");
     }
 
-    public RedisFuture<Long> async(final String destination, final String action, final String message) {
-        if (this.plugin.debug()) {
-            this.plugin.info("Publish async: (" + destination + ", " + action + ", " + message + ")");
-        }
+    return this.connection.async().publish(
+      // Destination
+      "rift:" + destination,
+      // Source
+      this.plugin.name()
+      + "," +
+      // Action
+      action
+      + "," +
+      // Message
+      message
+    );
+  }
 
-        if (this.connection == null) {
-            this.plugin.severe("Async connection null");
-            return null;
-        }
-
-        return this.connection.async().publish(
-            "rift:" + destination, this.plugin.name() + "," + action + "," + message
-        );
+  public Long sync(final String destination, final String action, final String message) {
+    if (this.plugin.debug()) {
+      this.plugin.info("Publish sync: (" + destination + ", " + action + ", " + message + ")");
     }
 
-    public Long sync(final String destination, final String action, final String message) {
-        if (this.plugin.debug()) {
-            this.plugin.info("Publish sync: (" + destination + ", " + action + ", " + message + ")");
-        }
+    return this.connection.sync().publish(
+      // Destination
+      "rift:" + destination,
+      // Source
+      this.plugin.name()
+      + "," +
+      // Action
+      action
+      + "," +
+      // Message
+      message
+    );
+  }
 
-        if (this.connection == null) {
-            this.plugin.severe("Sync connection null");
-            return -1L;
-        }
+  private RedisURI credentials() {
+    final RedisURI credentials = new RedisURI(
+      this.plugin.getConfig().getString("redis.host"),
+      this.plugin.getConfig().getInt("redis.port"),
+      Duration.ofSeconds(30)
+    );
 
-        return this.connection.sync().publish(
-            "rift:" + destination, this.plugin.name() + "," + action + "," + message
-        );
+    if (this.plugin.getConfig().getBoolean("redis.auth.enabled")) {
+      credentials.setPassword(this.plugin.getConfig().getString("redis.auth.password"));
     }
 
-    private RedisURI credentials() {
-        final RedisURI credentials = new RedisURI(
-            this.plugin.getConfig().getString("redis.host"),
-            this.plugin.getConfig().getInt("redis.port"),
-            Duration.ofSeconds(30)
-        );
+    return credentials;
+  }
 
-        if (this.plugin.getConfig().getBoolean("redis.auth.enabled")) {
-            credentials.setPassword(this.plugin.getConfig().getString("redis.auth.password"));
-        }
-
-        return credentials;
-    }
-
-    @Override
-    public void close() {
-        this.connection.close();
-        this.psConnection.close();
-        this.redisClient.shutdown();
-    }
+  @Override
+  public void close() {
+    this.connection.close();
+    this.psConnection.close();
+    this.redisClient.shutdown();
+  }
 
 }

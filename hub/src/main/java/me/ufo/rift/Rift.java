@@ -1,108 +1,105 @@
 package me.ufo.rift;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import me.ufo.rift.commands.JoinQueueCommand;
+import me.ufo.rift.commands.LeaveQueueCommand;
+import me.ufo.rift.commands.RiftCommand;
+import me.ufo.rift.listeners.RiftInboundMessageListener;
+import me.ufo.rift.obj.RiftServerStatus;
 import me.ufo.rift.redis.Redis;
-import me.ufo.rift.tasks.PingTask;
-import org.bukkit.entity.Player;
+import me.ufo.rift.redis.Riftbound;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 public final class Rift extends JavaPlugin {
 
-    private final String name;
-    private Redis redis;
-    private BukkitTask pingTask;
-    private boolean debug;
+  private static Rift instance;
 
-    public Rift() {
-        this.saveDefaultConfig();
-        this.name = this.getConfig().getString("server-name");
-    }
+  private final String name;
+  private Redis redis;
+  private BukkitTask pingTask;
+  private boolean debug;
 
-    @Override
-    public void onLoad() {
-        this.getLogger().info(
-            "\n       _  __ _   \n" +
-                "      (_)/ _| |  \n" +
-                "  _ __ _| |_| |_ \n" +
-                " | '__| |  _| __|    HUB SERVER: " + this.name + "\n" +
-                " | |  | | | | |_ \n" +
-                " |_|  |_|_|  \\__|\n"
-        );
+  public Rift() {
+    this.saveDefaultConfig();
+    this.name = this.getConfig().getString("server-name");
+  }
 
-        this.redis = new Redis(this);
-    }
+  @Override
+  public void onLoad() {
+    this.getLogger().info(
+      "\n\n" +
+      "       _  __ _  \n" +
+      "      (_)/ _| | \n" +
+      "  _ __ _| |_| |_\n" +
+      " | '__| |  _| __|    HUB SERVER: " + this.name + "\n" +
+      " | |  | | | | |_\n" +
+      " |_|  |_|_|  \\__|\n"
+    );
 
-    @Override
-    public void onEnable() {
-        // Register commands
-        this.getCommand("rift").setExecutor(new RiftCommand(this));
+    this.redis = new Redis(this);
+  }
 
-        // Register event listeners
-        final PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new RiftboundMessageListener(this), this);
-        pm.registerEvents(new PlayerListener(this), this);
+  @Override
+  public void onEnable() {
+    instance = this;
 
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+    // Register commands
+    this.getCommand("rift").setExecutor(new RiftCommand(this));
+    this.getCommand("joinqueue").setExecutor(new JoinQueueCommand(this));
+    this.getCommand("leavequeue").setExecutor(new LeaveQueueCommand(this));
 
-        // Register repeating tasks
-        this.pingTask = this.getServer().getScheduler().runTaskTimerAsynchronously(
-            this, new PingTask(this), 60L, 60L);
+    // Register event listeners
+    final PluginManager pm = this.getServer().getPluginManager();
+    pm.registerEvents(new RiftInboundMessageListener(this), this);
 
-        this.redis.async("all", "ONLINE", "HUB");
-    }
+    this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-    @Override
-    public void onDisable() {
-        this.pingTask.cancel();
-        this.redis().async("all", "OFFLINE", "").thenAccept(ignored -> this.redis.close());
-    }
+    // Register repeating tasks
+    final BukkitScheduler scheduler = this.getServer().getScheduler();
+    this.pingTask = scheduler.runTaskTimerAsynchronously(this, () -> Riftbound.outbound().ping(), 60L, 60L);
+  }
 
-    public void info(final String message) {
-        this.getLogger().info(message);
-    }
+  @Override
+  public void onDisable() {
+    this.pingTask.cancel();
+    this.redis.close();
+  }
 
-    public void severe(final String message) {
-        this.getLogger().severe(message);
-    }
+  public void info(final String message) {
+    this.getLogger().info(message);
+  }
 
-    public String response() {
-        return "HUB" + "," + this.getServer().getOnlinePlayers().size() + "," +
-            (this.getServer().hasWhitelist() ?
-             RiftServerStatus.WHITELISTED.name() : RiftServerStatus.ONLINE.name());
-    }
+  public void severe(final String message) {
+    this.getLogger().severe(message);
+  }
 
-    public void sendPlayerToServer(final Player player, final String server) {
-        this.info("sending player to " + server);
-        try (final ByteArrayOutputStream b = new ByteArrayOutputStream();
-             final DataOutputStream out = new DataOutputStream(b)) {
+  public String response() {
+    return "HUB" + "," + this.getServer().getOnlinePlayers().size() + "," +
+           (this.getServer().hasWhitelist() ?
+            RiftServerStatus.WHITELISTED.name() : RiftServerStatus.ONLINE.name());
+  }
 
-            out.writeUTF("Connect");
-            out.writeUTF(server);
-            player.sendPluginMessage(this, "BungeeCord", b.toByteArray());
-        } catch (final IOException ignored) {
-            player.sendMessage("Failed to send you to: " + server);
-        }
-    }
+  public String name() {
+    return this.name;
+  }
 
-    public String name() {
-        return this.name;
-    }
+  public boolean debug() {
+    return this.debug;
+  }
 
-    public boolean debug() {
-        return this.debug;
-    }
+  public boolean toggleDebug() {
+    this.debug = !this.debug;
+    return this.debug;
+  }
 
-    public boolean toggleDebug() {
-        this.debug = !this.debug;
-        return this.debug;
-    }
+  public Redis redis() {
+    return this.redis;
+  }
 
-    public Redis redis() {
-        return this.redis;
-    }
+  public static Rift instance() {
+    return instance;
+  }
 
 }
