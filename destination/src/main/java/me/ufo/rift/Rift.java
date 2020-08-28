@@ -4,7 +4,7 @@ import me.ufo.rift.commands.HubCommand;
 import me.ufo.rift.commands.RiftCommand;
 import me.ufo.rift.listeners.RiftboundMessageListener;
 import me.ufo.rift.obj.RiftServerStatus;
-import me.ufo.rift.permission.PermissionProvider;
+import me.ufo.rift.permission.PriorityProvider;
 import me.ufo.rift.redis.Redis;
 import me.ufo.rift.redis.Riftbound;
 import org.bukkit.plugin.PluginManager;
@@ -19,7 +19,7 @@ public final class Rift extends JavaPlugin {
   private final String name;
   private Redis redis;
   private BukkitTask pingTask;
-  private PermissionProvider provider;
+  private PriorityProvider provider;
   private boolean registered;
   private boolean debug;
 
@@ -42,7 +42,7 @@ public final class Rift extends JavaPlugin {
 
     this.redis = new Redis(this);
 
-    this.provider = PermissionProvider.setup(this);
+    this.provider = PriorityProvider.setup(this);
     if (this.provider == null) {
       this.severe("No permissions plugin has been detected.");
       this.getServer().getPluginManager().disablePlugin(this);
@@ -92,7 +92,7 @@ public final class Rift extends JavaPlugin {
     return this.redis;
   }
 
-  public PermissionProvider provider() {
+  public PriorityProvider provider() {
     return this.provider;
   }
 

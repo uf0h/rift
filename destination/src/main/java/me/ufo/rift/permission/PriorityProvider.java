@@ -6,7 +6,7 @@ import me.ufo.rift.redis.Riftbound;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.cacheddata.CachedPermissionData;
 
-public enum PermissionProvider implements IPermissionProvider {
+public enum PriorityProvider implements IPriorityProvider {
 
   LUCKPERMS("LuckPerms") {
     @Override
@@ -29,12 +29,12 @@ public enum PermissionProvider implements IPermissionProvider {
 
   private final String name;
 
-  PermissionProvider(final String name) {
+  PriorityProvider(final String name) {
     this.name = name;
   }
 
-  public static PermissionProvider setup(final Rift plugin) {
-    for (final PermissionProvider value : values()) {
+  public static PriorityProvider setup(final Rift plugin) {
+    for (final PriorityProvider value : values()) {
       if (plugin.getServer().getPluginManager().getPlugin(value.name) != null) {
         return value;
       }
