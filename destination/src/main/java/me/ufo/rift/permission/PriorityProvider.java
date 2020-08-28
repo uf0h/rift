@@ -14,15 +14,19 @@ public enum PriorityProvider implements IPriorityProvider {
       LuckPermsProvider.get().getUserManager().loadUser(uuid).thenAcceptAsync(u -> {
         final CachedPermissionData permissionData = u.getCachedData().getPermissionData();
 
-        int priority = 100;
-        for (int i = 100; i > 0; i--) {
-          if (permissionData.checkPermission("rift.priority." + i).asBoolean()) {
-            priority = i;
-            break;
+        if (permissionData.checkPermission("rift.bypass").asBoolean()) {
+          Riftbound.outbound().playerQueueBypass(uuid);
+        } else {
+          int priority = 100;
+          for (int i = 100; i > 0; i--) {
+            if (permissionData.checkPermission("rift.priority." + i).asBoolean()) {
+              priority = i;
+              break;
+            }
           }
-        }
 
-        Riftbound.outbound().playerInfoResponse(uuid, source, u.getPrimaryGroup(), priority);
+          Riftbound.outbound().playerInfoResponse(uuid, source, u.getPrimaryGroup(), priority);
+        }
       });
     }
   };

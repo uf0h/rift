@@ -67,6 +67,12 @@ public final class RiftInboundMessageListener implements Listener {
           this.plugin.getProxy().getPlayer(uuid).connect(this.plugin.getLeastPopulatedHub());
           break;
         }
+
+        case PLAYER_QUEUE_BYPASS: {
+          this.plugin.getProxy().getPlayer(uuid)
+            .connect(this.plugin.getProxy().getServerInfo(event.getMessage()[1]));
+          break;
+        }
         default:
       }
     });
