@@ -4,3 +4,4 @@ main: me.ufo.rift.Rift
 softdepend: [LuckPerms]
 commands:
   rift:
+  hub:

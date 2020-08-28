@@ -7,6 +7,8 @@ import me.ufo.rift.events.RiftInboundMessageEvent;
 import me.ufo.rift.obj.QueuePlayer;
 import me.ufo.rift.redis.Riftbound;
 import me.ufo.rift.util.FastUUID;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -50,8 +52,9 @@ public final class RiftInboundMessageListener implements Listener {
         player.setRank(event.getMessage()[1]);
         player.setPriority(Integer.parseInt(event.getMessage()[2]));
 
-        this.plugin.getServer().getPlayer(uuid)
-          .sendMessage("Attempting to send to " + player.getDestination());
+        final Player bukkitPlayer = this.plugin.getServer().getPlayer(uuid);
+
+        bukkitPlayer.sendMessage(ChatColor.RED.toString() + "Attempting to send " + bukkitPlayer.getName() + " to " + player.getDestination() + ".");
 
         Riftbound.outbound()
           .playerQueueJoin(uuid, player.getDestination(), player.getRank(), player.getPriority());

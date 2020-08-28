@@ -3,6 +3,7 @@ package me.ufo.rift.commands;
 import me.ufo.rift.Rift;
 import me.ufo.rift.obj.QueuePlayer;
 import me.ufo.rift.redis.Riftbound;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,12 +30,12 @@ public final class JoinQueueCommand implements CommandExecutor {
     }
 
     if (args.length != 1) {
-      sender.sendMessage("Usage: /joinqueue <queue>");
+      sender.sendMessage(ChatColor.RED.toString() + "Usage: /joinqueue <queue>");
       return false;
     }
 
     if (QueuePlayer.fromUUID(((Player) sender).getUniqueId()) != null) {
-      sender.sendMessage("You are already in a queue.");
+      sender.sendMessage(ChatColor.RED.toString() + "You are already in a queue.");
       return false;
     }
 

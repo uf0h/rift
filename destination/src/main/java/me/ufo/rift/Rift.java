@@ -1,5 +1,6 @@
 package me.ufo.rift;
 
+import me.ufo.rift.commands.HubCommand;
 import me.ufo.rift.commands.RiftCommand;
 import me.ufo.rift.listeners.RiftboundMessageListener;
 import me.ufo.rift.obj.RiftServerStatus;
@@ -52,6 +53,7 @@ public final class Rift extends JavaPlugin {
   public void onEnable() {
     // Register commands
     this.getCommand("rift").setExecutor(new RiftCommand(this));
+    this.getCommand("hub").setExecutor(new HubCommand(this));
 
     // Register event listeners
     final PluginManager pm = this.getServer().getPluginManager();

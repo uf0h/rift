@@ -59,7 +59,12 @@ public final class RiftInboundMessageListener implements Listener {
         }
 
         case PLAYER_QUEUE_LEAVE: {
-          QueuePlayer.destroy(FastUUID.fromString(event.getMessage()[0]));
+          QueuePlayer.destroy(uuid);
+          break;
+        }
+
+        case PLAYER_HUB_SEND: {
+          this.plugin.getProxy().getPlayer(uuid).connect(this.plugin.getLeastPopulatedHub());
           break;
         }
         default:

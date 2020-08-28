@@ -1,5 +1,6 @@
 package me.ufo.rift.commands;
 
+import java.util.Arrays;
 import me.ufo.rift.Rift;
 import me.ufo.rift.queues.QueuePlayer;
 import me.ufo.rift.queues.RiftQueue;
@@ -31,6 +32,40 @@ public final class RiftCommand extends Command {
     final ComponentBuilder out = new ComponentBuilder();
 
     switch (args[0].toLowerCase()) {
+      case "displayname": {
+        if (args.length != 2) {
+          sender.sendMessage("Usage: /br displayname <queue>");
+          return;
+        }
+
+        final RiftQueue queue = RiftQueue.fromName(args[1]);
+        if (queue == null) {
+          sender.sendMessage("That is not a valid queue.");
+          return;
+        }
+
+        sender.sendMessage(args[1] + "'s display name is set to: " + queue.getDisplayName());
+        return;
+      }
+
+      case "setdisplayname" : {
+        if (args.length < 3) {
+          sender.sendMessage("Usage: /br setdisplayname <queue> <name>");
+          return;
+        }
+
+        final RiftQueue queue = RiftQueue.fromName(args[1]);
+        if (queue == null) {
+          sender.sendMessage("That is not a valid queue.");
+          return;
+        }
+
+        final String displayName = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+        queue.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+        this.plugin.config().saveQueue(queue);
+        break;
+      }
+
       case "debugmode":
         final boolean mode = this.plugin.toggleDebug();
         sender.sendMessage(mode ? "Debug mode is enabled." : "Debug mode is disabled.");
@@ -128,6 +163,8 @@ public final class RiftCommand extends Command {
         sender.sendMessage("Destination servers' queue {" + args[1] + "} has been " +
                            (queuing ? "enabled" : "disabled") + "."
         );
+
+        this.plugin.config().saveQueue(riftServer.getQueue());
         break;
 
       case "setqueue":

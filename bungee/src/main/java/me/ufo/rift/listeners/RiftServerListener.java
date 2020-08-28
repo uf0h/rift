@@ -29,7 +29,7 @@ public final class RiftServerListener implements Listener {
 
     if (to != null) {
       if (to.isHubServer()) {
-        event.setTarget(this.getLeastPopulatedHub());
+        event.setTarget(this.plugin.getLeastPopulatedHub());
       }
     }
   }
@@ -46,7 +46,7 @@ public final class RiftServerListener implements Listener {
 
     if (from != null) {
       if (from.isDestinationServer()) {
-        event.setCancelServer(this.getLeastPopulatedHub());
+        event.setCancelServer(this.plugin.getLeastPopulatedHub());
         event.setCancelled(true);
       }
     }
@@ -112,27 +112,6 @@ public final class RiftServerListener implements Listener {
         }
       }
     });
-  }
-
-  private ServerInfo getLeastPopulatedHub() {
-    ServerInfo out = null;
-    for (final RiftServer server : RiftServer.getServers()) {
-      if (server.isHubServer()) {
-        final ServerInfo info = this.plugin.getProxy().getServerInfo(server.getName());
-        if (info != null) {
-          if (out == null) {
-            out = info;
-            continue;
-          }
-
-          if (out.getPlayers().size() > info.getPlayers().size()) {
-            out = info;
-          }
-        }
-      }
-    }
-
-    return out;
   }
 
 }

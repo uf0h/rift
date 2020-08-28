@@ -26,7 +26,7 @@ public final class RiftCommand implements CommandExecutor {
     if (args.length <= 0) {
       return false;
     }
-
+    // TODO: add /lag command (mem usage)
     switch (args[0].toLowerCase()) {
       case "queueplayers":
         sender.sendMessage("" + QueuePlayer.getPlayers().size());

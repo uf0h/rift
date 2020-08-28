@@ -9,6 +9,8 @@ import me.ufo.rift.listeners.RiftServerListener;
 import me.ufo.rift.queues.tasks.QueuePositionTask;
 import me.ufo.rift.queues.tasks.QueuePushTask;
 import me.ufo.rift.redis.Redis;
+import me.ufo.rift.servers.RiftServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
@@ -53,8 +55,9 @@ public final class Rift extends Plugin {
     pm.registerListener(this, new RiftServerListener(this));
 
     // Register tasks
+    // TODO: editable times
     this.queuePushTask = this.getProxy().getScheduler().schedule(
-      this, new QueuePushTask(this), 1, 1, TimeUnit.SECONDS);
+      this, new QueuePushTask(this), 1, 500, TimeUnit.MILLISECONDS);
 
     this.queuePositionTask = this.getProxy().getScheduler().schedule(
       this, new QueuePositionTask(this), 1, 5, TimeUnit.SECONDS);
@@ -73,6 +76,27 @@ public final class Rift extends Plugin {
 
   public void severe(final String message) {
     this.getLogger().severe(message);
+  }
+
+  public ServerInfo getLeastPopulatedHub() {
+    ServerInfo out = null;
+    for (final RiftServer server : RiftServer.getServers()) {
+      if (server.isHubServer()) {
+        final ServerInfo info = this.getProxy().getServerInfo(server.getName());
+        if (info != null) {
+          if (out == null) {
+            out = info;
+            continue;
+          }
+
+          if (out.getPlayers().size() > info.getPlayers().size()) {
+            out = info;
+          }
+        }
+      }
+    }
+
+    return out;
   }
 
   public RiftConfig config() {

@@ -11,6 +11,8 @@ public final class RiftQueue {
   // name is also destination
   private final String name;
 
+  private String displayName;
+
   private final PriorityQueue<QueuePlayer> priorityQueue;
 
   // whether the destination server is found
@@ -21,6 +23,7 @@ public final class RiftQueue {
 
   public RiftQueue(final String name) {
     this.name = name;
+    this.displayName = name;
     this.priorityQueue = new PriorityQueue<>(QueuePlayer::compareTo);
     this.queuing = true;
 
@@ -29,6 +32,14 @@ public final class RiftQueue {
 
   public String getName() {
     return this.name;
+  }
+
+  public String getDisplayName() {
+    return this.displayName;
+  }
+
+  public void setDisplayName(final String displayName) {
+    this.displayName = displayName;
   }
 
   public PriorityQueue<QueuePlayer> getPriorityQueue() {

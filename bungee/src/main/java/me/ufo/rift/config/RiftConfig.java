@@ -11,6 +11,7 @@ import com.google.common.io.ByteStreams;
 import io.lettuce.core.RedisURI;
 import me.ufo.rift.Rift;
 import me.ufo.rift.queues.RiftQueue;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -20,6 +21,10 @@ public class RiftConfig {
   private final Rift plugin;
   private final Configuration config;
   private final RedisURI credentials;
+
+  // Messages
+  private final String queuePosition;
+  private final String queuePaused;
 
   public RiftConfig(final Rift plugin) throws IOException {
     this.plugin = plugin;
@@ -45,7 +50,14 @@ public class RiftConfig {
     final Collection<String> queues = queueSection.getKeys();
     if (!queues.isEmpty()) {
       for (final String queue : queues) {
-        new RiftQueue(queue);
+        final RiftQueue riftQueue = new RiftQueue(queue);
+        final boolean queuing = this.config.getBoolean("queues." + queue + ".queuing", true);
+        final String displayName = this.config.getString("queues." + queue + ".display-name");
+        if (displayName != null) {
+          riftQueue.setDisplayName(displayName);
+        }
+
+        riftQueue.setQueuing(queuing);
 
         if (plugin.debug()) {
           plugin.info("New queue created for: {" + queue + "}");
@@ -62,12 +74,29 @@ public class RiftConfig {
     if (this.config.getBoolean("redis.auth.enabled")) {
       this.credentials.setPassword(this.config.getString("redis.auth.password"));
     }
+
+    this.queuePosition =
+      ChatColor.translateAlternateColorCodes('&',
+                                             this.config.getString("messages.queue-position"));
+    this.queuePaused =
+      ChatColor.translateAlternateColorCodes('&',
+                                             this.config.getString("messages.queue-paused"));
+
+  }
+
+  public String getQueuePaused() {
+    return this.queuePaused;
+  }
+
+  public String getQueuePosition() {
+    return this.queuePosition;
   }
 
   public void saveQueue(final RiftQueue queue) {
     final Configuration queueSection = this.config.getSection("queues");
 
     this.config.set("queues." + queue.getName() + ".queuing", queue.isQueuing());
+    this.config.set("queues." + queue.getName() + ".display-name", queue.getDisplayName());
 
     try {
       ConfigurationProvider.getProvider(YamlConfiguration.class).save(

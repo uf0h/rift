@@ -1,7 +1,6 @@
 package me.ufo.rift.commands;
 
 import me.ufo.rift.Rift;
-import me.ufo.rift.obj.QueuePlayer;
 import me.ufo.rift.redis.Riftbound;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -9,11 +8,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public final class LeaveQueueCommand implements CommandExecutor {
+public final class HubCommand implements CommandExecutor {
 
   private final Rift plugin;
 
-  public LeaveQueueCommand(final Rift plugin) {
+  public HubCommand(final Rift plugin) {
     this.plugin = plugin;
   }
 
@@ -26,14 +25,10 @@ public final class LeaveQueueCommand implements CommandExecutor {
       return false;
     }
 
-    final QueuePlayer queuePlayer = QueuePlayer.fromUUID(((Player) sender).getUniqueId());
-    if (queuePlayer != null) {
-      Riftbound.outbound().playerQueueLeave(queuePlayer.getUuid(), queuePlayer.getDestination());
-      QueuePlayer.getPlayers().remove(queuePlayer);
-      sender.sendMessage(ChatColor.GRAY.toString() + "You have left the queue.");
-    } else {
-      sender.sendMessage(ChatColor.GRAY.toString() + "You are not in a queue.");
-    }
+    final Player player = (Player) sender;
+
+    player.sendMessage(ChatColor.RED.toString() + "Attempting to send " + player.getName() + " to a hub.");
+    Riftbound.outbound().playerHubSend(player.getUniqueId());
     return true;
   }
 

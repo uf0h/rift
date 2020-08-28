@@ -28,6 +28,7 @@ public final class Riftbound {
       PING,
       PLAYER_QUEUE_LEAVE,
       PLAYER_QUEUE_JOIN,
+      PLAYER_HUB_SEND
     }
 
   }

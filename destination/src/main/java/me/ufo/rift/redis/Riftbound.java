@@ -35,6 +35,7 @@ public final class Riftbound {
     public enum Action {
       PING,
       PLAYER_INFO_RESPONSE,
+      PLAYER_HUB_SEND
     }
 
     public void ping() {
@@ -59,6 +60,17 @@ public final class Riftbound {
         Action.PLAYER_INFO_RESPONSE.name(),
         // Message
         FastUUID.toString(uuid) + "," + rank + "," + priority
+      );
+    }
+
+    public void playerHubSend(final UUID uuid) {
+      Rift.instance().redis().async(
+        // Destination
+        Server.BUNGEE.name(),
+        // Action
+        Action.PLAYER_HUB_SEND.name(),
+        // Message
+        FastUUID.toString(uuid)
       );
     }
 
