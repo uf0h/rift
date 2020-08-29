@@ -6,5 +6,7 @@ redis:
     password: "none"
 
 messages:
-  queue-position: "&7You are in position &a%pos%&8/&a%total% &7in the queue for %server%&7."
+  queue-position:
+    - "&7You are in position &a%pos%&8/&a%total% &7in the queue for %server%&7."
+    - "&7Purchase a &d&nrank &7on out store for a &a&nhighter &7priority."
   queue-paused: "&7The queue for %server% &7is currently paused."

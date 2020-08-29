@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import com.google.common.io.ByteStreams;
 import io.lettuce.core.RedisURI;
 import me.ufo.rift.Rift;
@@ -75,9 +76,10 @@ public class RiftConfig {
       this.credentials.setPassword(this.config.getString("redis.auth.password"));
     }
 
-    this.queuePosition =
-      ChatColor.translateAlternateColorCodes('&',
-                                             this.config.getString("messages.queue-position"));
+    this.queuePosition = this.config.getStringList("messages.queue-position")
+      .stream().map(s -> ChatColor.translateAlternateColorCodes('&', s))
+      .collect(Collectors.joining("\n"));
+
     this.queuePaused =
       ChatColor.translateAlternateColorCodes('&',
                                              this.config.getString("messages.queue-paused"));
