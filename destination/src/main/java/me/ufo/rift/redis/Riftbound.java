@@ -80,7 +80,7 @@ public final class Riftbound {
         // Destination
         Server.BUNGEE.name(),
         // Action
-        Action.PLAYER_HUB_SEND.name(),
+        Action.PLAYER_QUEUE_BYPASS.name(),
         // Message
         FastUUID.toString(uuid) + "," + Rift.instance().name()
       );
