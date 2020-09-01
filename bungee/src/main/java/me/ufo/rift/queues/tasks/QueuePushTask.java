@@ -3,8 +3,8 @@ package me.ufo.rift.queues.tasks;
 import me.ufo.rift.Rift;
 import me.ufo.rift.queues.QueuePlayer;
 import me.ufo.rift.queues.RiftQueue;
-import me.ufo.rift.servers.RiftServer;
-import me.ufo.rift.servers.RiftServerStatus;
+import me.ufo.rift.server.RiftServer;
+import me.ufo.rift.server.RiftServerStatus;
 
 public final class QueuePushTask implements Runnable {
 

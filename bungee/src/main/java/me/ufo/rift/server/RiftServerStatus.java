@@ -1,4 +1,4 @@
-package me.ufo.rift.servers;
+package me.ufo.rift.server;
 
 public enum RiftServerStatus {
 

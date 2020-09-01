@@ -13,11 +13,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 
-public final class RiftInboundMessageListener implements Listener {
+public final class RiftInboundListener implements Listener {
 
   private final Rift plugin;
 
-  public RiftInboundMessageListener(final Rift plugin) {
+  public RiftInboundListener(final Rift plugin) {
     this.plugin = plugin;
   }
 

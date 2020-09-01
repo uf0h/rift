@@ -3,7 +3,7 @@ package me.ufo.rift;
 import me.ufo.rift.commands.JoinQueueCommand;
 import me.ufo.rift.commands.LeaveQueueCommand;
 import me.ufo.rift.commands.RiftCommand;
-import me.ufo.rift.listeners.RiftInboundMessageListener;
+import me.ufo.rift.listeners.RiftInboundListener;
 import me.ufo.rift.obj.RiftServerStatus;
 import me.ufo.rift.redis.Redis;
 import me.ufo.rift.redis.Riftbound;
@@ -52,7 +52,7 @@ public final class Rift extends JavaPlugin {
 
     // Register event listeners
     final PluginManager pm = this.getServer().getPluginManager();
-    pm.registerEvents(new RiftInboundMessageListener(this), this);
+    pm.registerEvents(new RiftInboundListener(this), this);
 
     this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 

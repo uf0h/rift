@@ -7,19 +7,19 @@ import me.ufo.rift.events.RiftInboundMessageEvent;
 import me.ufo.rift.queues.QueuePlayer;
 import me.ufo.rift.queues.RiftQueue;
 import me.ufo.rift.redis.Riftbound;
-import me.ufo.rift.servers.RiftServer;
-import me.ufo.rift.servers.RiftServerStatus;
-import me.ufo.rift.servers.RiftServerType;
+import me.ufo.rift.server.RiftServer;
+import me.ufo.rift.server.RiftServerStatus;
+import me.ufo.rift.server.RiftServerType;
 import me.ufo.rift.util.FastUUID;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 
-public final class RiftInboundMessageListener implements Listener {
+public final class RiftInboundListener implements Listener {
 
   private final Rift plugin;
 
-  public RiftInboundMessageListener(final Rift plugin) {
+  public RiftInboundListener(final Rift plugin) {
     this.plugin = plugin;
   }
 

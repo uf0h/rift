@@ -2,7 +2,9 @@ package me.ufo.rift;
 
 import me.ufo.rift.commands.HubCommand;
 import me.ufo.rift.commands.RiftCommand;
-import me.ufo.rift.listeners.RiftboundMessageListener;
+import me.ufo.rift.commands.StopCommand;
+import me.ufo.rift.listeners.RiftInboundListener;
+import me.ufo.rift.listeners.StopListener;
 import me.ufo.rift.obj.RiftServerStatus;
 import me.ufo.rift.permission.PriorityProvider;
 import me.ufo.rift.redis.Redis;
@@ -22,6 +24,8 @@ public final class Rift extends JavaPlugin {
   private PriorityProvider provider;
   private boolean registered;
   private boolean debug;
+
+  private boolean stopping;
 
   public Rift() {
     instance = this;
@@ -54,10 +58,12 @@ public final class Rift extends JavaPlugin {
     // Register commands
     this.getCommand("rift").setExecutor(new RiftCommand(this));
     this.getCommand("hub").setExecutor(new HubCommand(this));
+    this.getCommand("stop").setExecutor(new StopCommand(this));
 
     // Register event listeners
     final PluginManager pm = this.getServer().getPluginManager();
-    pm.registerEvents(new RiftboundMessageListener(this), this);
+    pm.registerEvents(new RiftInboundListener(this), this);
+    pm.registerEvents(new StopListener(this), this);
 
     // Register repeating tasks
     final BukkitScheduler scheduler = this.getServer().getScheduler();
@@ -112,6 +118,14 @@ public final class Rift extends JavaPlugin {
   public boolean toggleDebug() {
     this.debug = !this.debug;
     return this.debug;
+  }
+
+  public boolean isStopping() {
+    return this.stopping;
+  }
+
+  public void setStopping(final boolean stopping) {
+    this.stopping = stopping;
   }
 
   public static Rift instance() {

@@ -83,7 +83,6 @@ public class RiftConfig {
     this.queuePaused =
       ChatColor.translateAlternateColorCodes('&',
                                              this.config.getString("messages.queue-paused"));
-
   }
 
   public String getQueuePaused() {

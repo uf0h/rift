@@ -35,7 +35,10 @@ public final class JoinQueueCommand implements CommandExecutor {
     }
 
     if (QueuePlayer.fromUUID(((Player) sender).getUniqueId()) != null) {
-      sender.sendMessage(ChatColor.RED.toString() + "You are already in a queue.");
+      sender.sendMessage(new String[] {
+        ChatColor.RED.toString() + "You are already in a queue.",
+        ChatColor.RED.toString() + "To leave the queue do: /leavequeue"
+      });
       return false;
     }
 

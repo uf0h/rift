@@ -5,3 +5,4 @@ softdepend: [LuckPerms]
 commands:
   rift:
   hub:
+  stop:

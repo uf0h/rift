@@ -4,7 +4,7 @@ import java.util.Arrays;
 import me.ufo.rift.Rift;
 import me.ufo.rift.queues.QueuePlayer;
 import me.ufo.rift.queues.RiftQueue;
-import me.ufo.rift.servers.RiftServer;
+import me.ufo.rift.server.RiftServer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;

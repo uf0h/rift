@@ -1,4 +1,4 @@
-package me.ufo.rift.servers;
+package me.ufo.rift.server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +65,8 @@ public final class RiftServer {
   }
 
   public boolean isOnline() {
-    return this.serverStatus == RiftServerStatus.ONLINE && System
-                                                             .currentTimeMillis() - this.lastPing < 15000L;
+    return this.serverStatus == RiftServerStatus.ONLINE &&
+           System.currentTimeMillis() - this.lastPing < 15000L;
   }
 
   public boolean hasQueue() {

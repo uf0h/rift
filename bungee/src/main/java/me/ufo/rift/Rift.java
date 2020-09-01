@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import me.ufo.rift.commands.RiftCommand;
 import me.ufo.rift.config.RiftConfig;
-import me.ufo.rift.listeners.RiftInboundMessageListener;
+import me.ufo.rift.listeners.RiftInboundListener;
 import me.ufo.rift.listeners.RiftServerListener;
 import me.ufo.rift.queues.tasks.QueuePositionTask;
 import me.ufo.rift.queues.tasks.QueuePushTask;
 import me.ufo.rift.redis.Redis;
-import me.ufo.rift.servers.RiftServer;
+import me.ufo.rift.server.RiftServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -51,7 +51,7 @@ public final class Rift extends Plugin {
     // Register commands & listeners
     final PluginManager pm = this.getProxy().getPluginManager();
     pm.registerCommand(this, new RiftCommand(this));
-    pm.registerListener(this, new RiftInboundMessageListener(this));
+    pm.registerListener(this, new RiftInboundListener(this));
     pm.registerListener(this, new RiftServerListener(this));
 
     // Register tasks

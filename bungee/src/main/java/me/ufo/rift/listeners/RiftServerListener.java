@@ -3,8 +3,7 @@ package me.ufo.rift.listeners;
 import me.ufo.rift.Rift;
 import me.ufo.rift.queues.QueuePlayer;
 import me.ufo.rift.redis.Riftbound;
-import me.ufo.rift.servers.RiftServer;
-import net.md_5.bungee.api.config.ServerInfo;
+import me.ufo.rift.server.RiftServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
@@ -96,7 +95,11 @@ public final class RiftServerListener implements Listener {
       return;
     }
 
-    this.plugin.info("ProxyDisconnectEvent triggered for: " + event.getPlayer().getName());
+    if (event.getPlayer().getServer() == null) {
+      return;
+    }
+
+    this.plugin.info("ProxyDisconnectEvent triggered.");
     this.plugin.getProxy().getScheduler().runAsync(this.plugin, () -> {
       final ProxiedPlayer proxiedPlayer = event.getPlayer();
       final RiftServer riftServer = RiftServer.fromName(proxiedPlayer.getServer().getInfo().getName());
