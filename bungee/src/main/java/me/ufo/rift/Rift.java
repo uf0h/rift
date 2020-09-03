@@ -1,6 +1,7 @@
 package me.ufo.rift;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 import me.ufo.rift.commands.RiftCommand;
 import me.ufo.rift.config.RiftConfig;
@@ -84,6 +85,10 @@ public final class Rift extends Plugin {
       if (server.isHubServer()) {
         final ServerInfo info = this.getProxy().getServerInfo(server.getName());
         if (info != null) {
+          if (!this.isServerOnline(info)) {
+            continue;
+          }
+
           if (out == null) {
             out = info;
             continue;
@@ -97,6 +102,14 @@ public final class Rift extends Plugin {
     }
 
     return out;
+  }
+
+  private boolean isServerOnline(final ServerInfo serverInfo) {
+    try (final Socket socket = new Socket()) {
+      socket.connect(serverInfo.getSocketAddress());
+      return true;
+    } catch (IOException ignored) {}
+    return false;
   }
 
   public RiftConfig config() {
