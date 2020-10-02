@@ -10,5 +10,3 @@ messages:
     - "&7You are in position &a%pos%&8/&a%total% &7in the queue for %server%&7."
     - "&7Purchase a &d&nrank&7 on our store for a &a&nhighter&7 priority."
   queue-paused: "&7The queue for %server% &7is currently paused."
-
-motd: "&bA Rift Server\n&7Click to connect."
