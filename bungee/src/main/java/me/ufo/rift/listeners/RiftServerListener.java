@@ -4,10 +4,8 @@ import me.ufo.rift.Rift;
 import me.ufo.rift.queues.QueuePlayer;
 import me.ufo.rift.redis.Riftbound;
 import me.ufo.rift.server.RiftServer;
-import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.event.ServerKickEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
@@ -20,16 +18,6 @@ public final class RiftServerListener implements Listener {
 
   public RiftServerListener(final Rift plugin) {
     this.plugin = plugin;
-  }
-
-  @EventHandler
-  public void onProxyPing(final ProxyPingEvent event) {
-    final ServerPing response = event.getResponse();
-
-    if (response != null) {
-      response.setDescriptionComponent(this.plugin.config().getMotd());
-      event.setResponse(response);
-    }
   }
 
   @EventHandler

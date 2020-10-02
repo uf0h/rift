@@ -13,8 +13,6 @@ import io.lettuce.core.RedisURI;
 import me.ufo.rift.Rift;
 import me.ufo.rift.queues.RiftQueue;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -24,9 +22,6 @@ public class RiftConfig {
   private final Rift plugin;
   private final Configuration config;
   private final RedisURI credentials;
-
-  // Motd
-  private BaseComponent motd;
 
   // Messages
   private final String queuePosition;
@@ -88,12 +83,6 @@ public class RiftConfig {
     this.queuePaused =
       ChatColor.translateAlternateColorCodes('&',
                                              this.config.getString("messages.queue-paused"));
-
-    final String motd =
-      ChatColor.translateAlternateColorCodes('&', this.config.getString("motd"))
-        .replace("%n%", "\n");
-
-    this.motd = new TextComponent(motd);
   }
 
   public String getQueuePaused() {
@@ -118,38 +107,6 @@ public class RiftConfig {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-
-  public void setMotd(final BaseComponent motd) {
-    this.motd = motd;
-
-    this.config.set("motd", this.motd.toLegacyText());
-    try {
-      ConfigurationProvider.getProvider(YamlConfiguration.class).save(
-        this.config,
-        new File(this.plugin.getDataFolder(), "config.yml")
-      );
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  public BaseComponent setMotdLineOne(final String firstLine) {
-    final String secondLine = this.motd.toLegacyText().split("\n")[1];
-    this.setMotd(new TextComponent(ChatColor.translateAlternateColorCodes('&', firstLine) + "\n" + secondLine));
-
-    return this.motd;
-  }
-
-  public BaseComponent setMotdLineTwo(final String secondLine) {
-    final String firstLine = this.motd.toLegacyText().split("\n")[0];
-    this.setMotd(new TextComponent(firstLine + "\n" + ChatColor.translateAlternateColorCodes('&', secondLine)));
-
-    return this.motd;
-  }
-
-  public BaseComponent getMotd() {
-    return this.motd;
   }
 
   public RedisURI credentials() {

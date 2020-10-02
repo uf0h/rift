@@ -3,7 +3,6 @@ package me.ufo.rift;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
-import me.ufo.rift.commands.MotdCommand;
 import me.ufo.rift.commands.RiftCommand;
 import me.ufo.rift.config.RiftConfig;
 import me.ufo.rift.listeners.RiftInboundListener;
@@ -53,7 +52,6 @@ public final class Rift extends Plugin {
     // Register commands & listeners
     final PluginManager pm = this.getProxy().getPluginManager();
     pm.registerCommand(this, new RiftCommand(this));
-    pm.registerCommand(this, new MotdCommand(this));
     pm.registerListener(this, new RiftInboundListener(this));
     pm.registerListener(this, new RiftServerListener(this));
 
