@@ -19,9 +19,6 @@
 > <br>A hub server refers to each hub server you have on your BungeeCord proxy.
 
 ### Getting Started
-There's really not much you can do right now outside of manually building and running rift yourself.
-###### Binaries will be provided once rift is production ready.
-
 Clone and cd into rift directory
 ```console
 git clone https://github.com/uf0h/rift.git && cd rift
