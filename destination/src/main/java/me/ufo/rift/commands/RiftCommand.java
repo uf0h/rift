@@ -3,6 +3,7 @@ package me.ufo.rift.commands;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import me.ufo.rift.Rift;
+import me.ufo.rift.redis.Riftbound;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 import org.bukkit.command.Command;
@@ -38,6 +39,12 @@ public final class RiftCommand implements CommandExecutor {
         }
 
         this.plugin.info(mode ? "Debug mode is enabled." : "Debug mode is disabled.");
+        break;
+
+      case "huball":
+        for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
+          Riftbound.outbound().playerHubSend(player.getUniqueId(), false);
+        }
         break;
 
       case "test":

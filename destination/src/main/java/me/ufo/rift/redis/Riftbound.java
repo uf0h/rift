@@ -64,15 +64,26 @@ public final class Riftbound {
       );
     }
 
-    public void playerHubSend(final UUID uuid) {
-      Rift.instance().redis().async(
-        // Destination
-        Server.BUNGEE.name(),
-        // Action
-        Action.PLAYER_HUB_SEND.name(),
-        // Message
-        FastUUID.toString(uuid)
-      );
+    public void playerHubSend(final UUID uuid, final boolean async) {
+      if (async) {
+        Rift.instance().redis().async(
+          // Destination
+          Server.BUNGEE.name(),
+          // Action
+          Action.PLAYER_HUB_SEND.name(),
+          // Message
+          FastUUID.toString(uuid)
+        );
+      } else {
+        Rift.instance().redis().sync(
+          // Destination
+          Server.BUNGEE.name(),
+          // Action
+          Action.PLAYER_HUB_SEND.name(),
+          // Message
+          FastUUID.toString(uuid)
+        );
+      }
     }
 
     public void playerQueueBypass(final UUID uuid) {

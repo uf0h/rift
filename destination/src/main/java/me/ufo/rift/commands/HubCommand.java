@@ -28,7 +28,7 @@ public final class HubCommand implements CommandExecutor {
     final Player player = (Player) sender;
 
     player.sendMessage(ChatColor.RED.toString() + "Attempting to send " + player.getName() + " to a hub.");
-    Riftbound.outbound().playerHubSend(player.getUniqueId());
+    Riftbound.outbound().playerHubSend(player.getUniqueId(), true);
     return true;
   }
 

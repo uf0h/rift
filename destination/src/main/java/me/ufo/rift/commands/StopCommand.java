@@ -1,6 +1,5 @@
 package me.ufo.rift.commands;
 
-import java.util.Iterator;
 import me.ufo.rift.Rift;
 import me.ufo.rift.redis.Riftbound;
 import org.bukkit.ChatColor;
@@ -36,13 +35,13 @@ public final class StopCommand implements CommandExecutor {
     if (!this.plugin.getServer().getOnlinePlayers().isEmpty()) {
       sender.sendMessage(ChatColor.RED.toString() + "Sending online players to hub...");
       for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
-        Riftbound.outbound().playerHubSend(player.getUniqueId());
+        Riftbound.outbound().playerHubSend(player.getUniqueId(), false);
       }
 
       this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, () -> {
         if (!this.plugin.getServer().getOnlinePlayers().isEmpty()) {
           for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
-            Riftbound.outbound().playerHubSend(player.getUniqueId());
+            Riftbound.outbound().playerHubSend(player.getUniqueId(), false);
           }
         } else {
           this.plugin.getServer().shutdown();
