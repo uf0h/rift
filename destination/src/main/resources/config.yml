@@ -5,4 +5,4 @@ redis:
     enabled: false
     password: "none"
 
-server-name: "drought"
+server-name: "factions-fire"
