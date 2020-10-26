@@ -49,7 +49,10 @@ public final class RiftCommand implements CommandExecutor {
         break;
 
       case "hubs":
-        sender.sendMessage(ChatColor.YELLOW.toString() + this.plugin.getHubs().toArray());
+        sender.sendMessage(ChatColor.GREEN.toString() + "Hubs:");
+        for (final String hub : this.plugin.getHubs()) {
+          sender.sendMessage(ChatColor.YELLOW.toString() + hub);
+        }
         break;
 
       case "test":
