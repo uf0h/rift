@@ -25,11 +25,26 @@ public final class Riftbound {
   public final static class Inbound {
 
     public enum Action {
+
       PING,
       PLAYER_QUEUE_LEAVE,
       PLAYER_QUEUE_JOIN,
       PLAYER_HUB_SEND,
-      PLAYER_QUEUE_BYPASS
+      PLAYER_SPECIFIC_HUB_SEND,
+      PLAYER_QUEUE_BYPASS;
+
+      private static final Action[] values = Action.values();
+
+      public static Action get(final String in) {
+        for (final Action value : values) {
+          if (in.equalsIgnoreCase(value.name())) {
+            return value;
+          }
+        }
+
+        return null;
+      }
+
     }
 
   }

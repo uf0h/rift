@@ -29,8 +29,11 @@ public final class PubSubListener implements RedisPubSubListener<String, String>
       if (this.plugin.name().equalsIgnoreCase(source)) {
         return;
       }
-      final Riftbound.Inbound.Action
-        action = checkNotNull(Riftbound.Inbound.Action.valueOf(messageParts[1]), "Action null");
+
+      final Riftbound.Inbound.Action action = Riftbound.Inbound.Action.get(messageParts[1]);
+      if (action == null) {
+        return;
+      }
 
       // Call async event
       this.plugin.getServer().getPluginManager().callEvent(
@@ -42,8 +45,12 @@ public final class PubSubListener implements RedisPubSubListener<String, String>
       if (this.plugin.name().equalsIgnoreCase(source)) {
         return;
       }
-      final Riftbound.Inbound.Action
-        action = checkNotNull(Riftbound.Inbound.Action.valueOf(messageParts[1]), "Action null");
+
+      final Riftbound.Inbound.Action action = Riftbound.Inbound.Action.get(messageParts[1]);
+      if (action == null) {
+        return;
+      }
+
       final String[] message = checkNotNull(
         Arrays.copyOfRange(messageParts, 2, messageParts.length), "Message null");
 

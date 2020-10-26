@@ -28,7 +28,19 @@ public final class Riftbound {
       PING,
       PLAYER_CHANGE_SERVER,
       PLAYER_PROXY_DISCONNECT,
-      PLAYER_INFO_RESPONSE
+      PLAYER_INFO_RESPONSE;
+
+      private static final Action[] values = Action.values();
+
+      public static Action get(final String in) {
+        for (final Action value : values) {
+          if (in.equalsIgnoreCase(value.name())) {
+            return value;
+          }
+        }
+
+        return null;
+      }
     }
 
   }

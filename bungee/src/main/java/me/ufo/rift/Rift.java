@@ -2,8 +2,13 @@ package me.ufo.rift;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import me.ufo.rift.commands.RiftCommand;
+import me.ufo.rift.commands.WhitelistCommand;
 import me.ufo.rift.config.RiftConfig;
 import me.ufo.rift.listeners.RiftInboundListener;
 import me.ufo.rift.listeners.RiftServerListener;
@@ -25,10 +30,15 @@ public final class Rift extends Plugin {
   private ScheduledTask queuePushTask;
   private ScheduledTask queuePositionTask;
 
+  private Map<UUID, String> whitelistedPlayers;
+  private AtomicBoolean whitelisted;
+
   private boolean debug;
 
   public Rift() throws IOException {
     this.config = new RiftConfig(this);
+    this.whitelisted = new AtomicBoolean(this.config.isWhitelisted());
+    this.whitelistedPlayers = new HashMap<>(this.config.getWhitelistedPlayers());
   }
 
   @Override
@@ -52,6 +62,7 @@ public final class Rift extends Plugin {
     // Register commands & listeners
     final PluginManager pm = this.getProxy().getPluginManager();
     pm.registerCommand(this, new RiftCommand(this));
+    pm.registerCommand(this, new WhitelistCommand(this));
     pm.registerListener(this, new RiftInboundListener(this));
     pm.registerListener(this, new RiftServerListener(this));
 
@@ -66,6 +77,8 @@ public final class Rift extends Plugin {
 
   @Override
   public void onDisable() {
+    this.config().saveWhitelistedPlayers();
+
     this.queuePositionTask.cancel();
     this.queuePushTask.cancel();
     this.redis.close();
@@ -108,7 +121,8 @@ public final class Rift extends Plugin {
     try (final Socket socket = new Socket()) {
       socket.connect(serverInfo.getSocketAddress());
       return true;
-    } catch (IOException ignored) {}
+    } catch (final IOException ignored) {
+    }
     return false;
   }
 
@@ -118,6 +132,19 @@ public final class Rift extends Plugin {
 
   public Redis redis() {
     return this.redis;
+  }
+
+  public Map<UUID, String> getWhitelistedPlayers() {
+    return whitelistedPlayers;
+  }
+
+  public boolean isWhitelisted() {
+    return this.whitelisted.get();
+  }
+
+  public void setWhitelisted(final boolean whitelisted) {
+    this.whitelisted.set(whitelisted);
+    this.config.setWhitelisted(whitelisted);
   }
 
   public boolean debug() {

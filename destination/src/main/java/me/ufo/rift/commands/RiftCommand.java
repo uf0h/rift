@@ -6,6 +6,7 @@ import me.ufo.rift.Rift;
 import me.ufo.rift.redis.Riftbound;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -45,6 +46,10 @@ public final class RiftCommand implements CommandExecutor {
         for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
           Riftbound.outbound().playerHubSend(player.getUniqueId(), false);
         }
+        break;
+
+      case "hubs":
+        sender.sendMessage(ChatColor.YELLOW.toString() + this.plugin.getHubs().toArray());
         break;
 
       case "test":

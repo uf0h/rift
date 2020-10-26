@@ -1,13 +1,17 @@
 package me.ufo.rift.listeners;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import me.ufo.rift.Rift;
 import me.ufo.rift.queues.QueuePlayer;
 import me.ufo.rift.redis.Riftbound;
 import me.ufo.rift.server.RiftServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.api.event.ServerKickEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -21,33 +25,62 @@ public final class RiftServerListener implements Listener {
   }
 
   @EventHandler
-  public void onServerConnect(final ServerConnectEvent event) {
-    this.plugin.info("ServerConnectEvent triggered.");
+  public void onLoginEvent(final LoginEvent event) {
+    if (this.plugin.isWhitelisted()) {
+      final String name = event.getConnection().getName();
+      final UUID uniqueId = event.getConnection().getUniqueId();
 
-    final RiftServer to = RiftServer.fromName(event.getTarget().getName());
+      final Iterator<Map.Entry<UUID, String>> iterator =
+        this.plugin.getWhitelistedPlayers().entrySet().iterator();
 
-    if (to != null) {
-      if (to.isHubServer()) {
-        event.setTarget(this.plugin.getLeastPopulatedHub());
+      while (iterator.hasNext()) {
+        final Map.Entry<UUID, String> entry = iterator.next();
+
+        if (uniqueId == null) {
+          this.plugin.getLogger().severe("UNiQUEID is null");
+          return;
+        }
+
+        if (uniqueId.equals(entry.getKey())) {
+          if (!name.equals(entry.getValue())) {
+            this.plugin.getLogger().info("uuid true, name not true");
+            iterator.remove();
+            this.plugin.getWhitelistedPlayers().put(uniqueId, name);
+            this.plugin.getProxy().getScheduler().schedule(this.plugin, () -> {
+              this.plugin.config().saveWhitelistedPlayers();
+            }, 5, TimeUnit.SECONDS);
+          }
+          return;
+        }
+
+        if (name.equalsIgnoreCase(entry.getValue())) {
+          if (!uniqueId.equals(entry.getKey())) {
+            this.plugin.getLogger().info("name true, uuid not true");
+            iterator.remove();
+            this.plugin.getWhitelistedPlayers().put(uniqueId, name);
+            this.plugin.getProxy().getScheduler().schedule(this.plugin, () -> {
+              this.plugin.config().saveWhitelistedPlayers();
+            }, 5, TimeUnit.SECONDS);
+          }
+          return;
+        }
       }
+
+      event.setCancelled(true);
+      event.setCancelReason(this.plugin.config().getWhitelistedMessage());
     }
   }
 
-  // when player is kicked from server
-  // can't distinguish between ban and kick
   @EventHandler
-  public void onServerKick(final ServerKickEvent event) {
-    // TODO: maybe check reason for "ban" then ignore
+  public void onServerConnect(final ServerConnectEvent event) {
+    if (this.plugin.debug()) {
+      this.plugin.info("ServerConnectEvent triggered.");
+    }
 
-    this.plugin.info("ServerKickEvent triggered.");
+    final ProxiedPlayer player = event.getPlayer();
 
-    final RiftServer from = RiftServer.fromName(event.getKickedFrom().getName());
-
-    if (from != null) {
-      if (from.isDestinationServer()) {
-        event.setCancelServer(this.plugin.getLeastPopulatedHub());
-        event.setCancelled(true);
-      }
+    if (player.getServer() == null) {
+      event.setTarget(this.plugin.getLeastPopulatedHub());
     }
   }
 
@@ -57,7 +90,9 @@ public final class RiftServerListener implements Listener {
       return;
     }
 
-    this.plugin.info("ServerSwitchEvent triggered.");
+    if (this.plugin.debug()) {
+      this.plugin.info("ServerSwitchEvent triggered.");
+    }
     this.plugin.getProxy().getScheduler().runAsync(this.plugin, () -> {
       final ProxiedPlayer proxiedPlayer = event.getPlayer();
       final RiftServer from = RiftServer.fromName(event.getFrom().getName());
@@ -99,7 +134,9 @@ public final class RiftServerListener implements Listener {
       return;
     }
 
-    this.plugin.info("ProxyDisconnectEvent triggered.");
+    if (this.plugin.debug()) {
+      this.plugin.info("ProxyDisconnectEvent triggered.");
+    }
     this.plugin.getProxy().getScheduler().runAsync(this.plugin, () -> {
       final ProxiedPlayer proxiedPlayer = event.getPlayer();
       final RiftServer riftServer = RiftServer.fromName(proxiedPlayer.getServer().getInfo().getName());

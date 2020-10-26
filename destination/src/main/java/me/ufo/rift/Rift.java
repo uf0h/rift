@@ -1,5 +1,7 @@
 package me.ufo.rift;
 
+import java.util.ArrayList;
+import java.util.List;
 import me.ufo.rift.commands.HubCommand;
 import me.ufo.rift.commands.RiftCommand;
 import me.ufo.rift.commands.StopCommand;
@@ -26,6 +28,7 @@ public final class Rift extends JavaPlugin {
   private boolean debug;
 
   private boolean stopping;
+  private List<String> hubs;
 
   public Rift() {
     instance = this;
@@ -51,6 +54,8 @@ public final class Rift extends JavaPlugin {
       this.severe("No permissions plugin has been detected.");
       this.getServer().getPluginManager().disablePlugin(this);
     }
+
+    this.hubs = new ArrayList<>(3);
   }
 
   @Override
@@ -126,6 +131,10 @@ public final class Rift extends JavaPlugin {
 
   public void setStopping(final boolean stopping) {
     this.stopping = stopping;
+  }
+
+  public List<String> getHubs() {
+    return hubs;
   }
 
   public static Rift instance() {

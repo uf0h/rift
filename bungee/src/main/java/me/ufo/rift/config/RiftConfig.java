@@ -6,13 +6,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import com.google.common.io.ByteStreams;
 import io.lettuce.core.RedisURI;
 import me.ufo.rift.Rift;
 import me.ufo.rift.queues.RiftQueue;
+import me.ufo.rift.util.FastUUID;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -26,6 +35,7 @@ public class RiftConfig {
   // Messages
   private final String queuePosition;
   private final String queuePaused;
+  private final BaseComponent[] whitelisted;
 
   public RiftConfig(final Rift plugin) throws IOException {
     this.plugin = plugin;
@@ -83,6 +93,70 @@ public class RiftConfig {
     this.queuePaused =
       ChatColor.translateAlternateColorCodes('&',
                                              this.config.getString("messages.queue-paused"));
+
+    final ComponentBuilder whitelist = new ComponentBuilder();
+
+    final List<String> message = config.getStringList("whitelist.message");
+
+    for (final String s : message) {
+      whitelist.append(ChatColor.translateAlternateColorCodes('&', s));
+    }
+
+    this.whitelisted = whitelist.create();
+  }
+
+  public boolean isWhitelisted() {
+    return config.getBoolean("whitelist.enabled", false);
+  }
+
+  public Map<UUID, String> getWhitelistedPlayers() {
+    final Configuration section = config.getSection("whitelist.players");
+
+    if (section == null) {
+      return Collections.emptyMap();
+    }
+
+    final Map<UUID, String> out = new HashMap<>();
+    for (final String name : section.getKeys()) {
+      out.put(FastUUID.fromString(section.getString(name)), name);
+    }
+
+    return out;
+  }
+
+  public void saveWhitelistedPlayers() {
+    final Map<UUID, String> players = this.plugin.getWhitelistedPlayers();
+
+    config.set("whitelist.players", null);
+    for (final Map.Entry<UUID, String> entry : players.entrySet()) {
+      config.set("whitelist.players." + entry.getValue(), FastUUID.toString(entry.getKey()));
+    }
+
+    try {
+      ConfigurationProvider.getProvider(YamlConfiguration.class).save(
+        this.config,
+        new File(this.plugin.getDataFolder(), "config.yml")
+      );
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void setWhitelisted(final boolean whitelisted) {
+    config.set("whitelist.enabled", whitelisted);
+
+    try {
+      ConfigurationProvider.getProvider(YamlConfiguration.class).save(
+        this.config,
+        new File(this.plugin.getDataFolder(), "config.yml")
+      );
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public BaseComponent[] getWhitelistedMessage() {
+    return whitelisted;
   }
 
   public String getQueuePaused() {

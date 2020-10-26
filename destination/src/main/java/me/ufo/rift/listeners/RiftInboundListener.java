@@ -28,6 +28,12 @@ public final class RiftInboundListener implements Listener {
 
     if (event.getAction() == Riftbound.Inbound.Action.PLAYER_INFO_REQUEST) {
       this.plugin.provider().send(event.getSource(), FastUUID.fromString(event.getMessage()[0]));
+    } else if (event.getAction() == Riftbound.Inbound.Action.PING) {
+      if ("HUB".equalsIgnoreCase(event.getMessage()[0])) {
+        if (!this.plugin.getHubs().contains(event.getSource())) {
+          this.plugin.getHubs().add(event.getSource());
+        }
+      }
     }
   }
 

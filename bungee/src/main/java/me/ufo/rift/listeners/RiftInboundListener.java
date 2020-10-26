@@ -11,6 +11,9 @@ import me.ufo.rift.server.RiftServer;
 import me.ufo.rift.server.RiftServerStatus;
 import me.ufo.rift.server.RiftServerType;
 import me.ufo.rift.util.FastUUID;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -68,9 +71,14 @@ public final class RiftInboundListener implements Listener {
           break;
         }
 
+        case PLAYER_SPECIFIC_HUB_SEND:
         case PLAYER_QUEUE_BYPASS: {
-          this.plugin.getProxy().getPlayer(uuid)
-            .connect(this.plugin.getProxy().getServerInfo(event.getMessage()[1]));
+          final ProxiedPlayer player = this.plugin.getProxy().getPlayer(uuid);
+          final TextComponent out = new TextComponent("Attempting to send to " + event.getMessage()[1]);
+          out.setColor(ChatColor.RED);
+
+          player.sendMessage(out);
+          player.connect(this.plugin.getProxy().getServerInfo(event.getMessage()[1]));
           break;
         }
         default:

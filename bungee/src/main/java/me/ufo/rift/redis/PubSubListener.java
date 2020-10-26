@@ -29,7 +29,11 @@ public final class PubSubListener implements RedisPubSubListener<String, String>
       if ("BUNGEE".equalsIgnoreCase(source)) {
         return;
       }
-      final Action action = checkNotNull(Action.valueOf(messageParts[1]), "Action null");
+
+      final Action action = Action.get(messageParts[1]);
+      if (action == null) {
+        return;
+      }
 
       final RiftInboundMessageEvent event = new RiftInboundMessageEvent(source, action, null);
       this.plugin.getProxy().getScheduler().schedule(
@@ -39,7 +43,12 @@ public final class PubSubListener implements RedisPubSubListener<String, String>
       if ("BUNGEE".equalsIgnoreCase(source)) {
         return;
       }
-      final Action action = checkNotNull(Action.valueOf(messageParts[1]), "Action null");
+
+      final Action action = Action.get(messageParts[1]);
+      if (action == null) {
+        return;
+      }
+
       final String[] message = checkNotNull(
         Arrays.copyOfRange(messageParts, 2, messageParts.length), "Message null");
 

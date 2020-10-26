@@ -5,6 +5,12 @@ redis:
     enabled: false
     password: "none"
 
+whitelist:
+  enabled: false
+  message:
+    - "&7Under huge &c&lMAINTENANCE&7!"
+  players: {}
+
 messages:
   queue-position:
     - "&7You are in position &a%pos%&8/&a%total% &7in the queue for %server%&7."

@@ -25,7 +25,22 @@ public final class Riftbound {
   public final static class Inbound {
 
     public enum Action {
-      PLAYER_INFO_REQUEST
+
+      PING,
+      PLAYER_INFO_REQUEST;
+
+      private static final Action[] values = Action.values();
+
+      public static Action get(final String in) {
+        for (final Action value : values) {
+          if (in.equalsIgnoreCase(value.name())) {
+            return value;
+          }
+        }
+
+        return null;
+      }
+
     }
 
   }
@@ -36,6 +51,7 @@ public final class Riftbound {
       PING,
       PLAYER_INFO_RESPONSE,
       PLAYER_HUB_SEND,
+      PLAYER_SPECIFIC_HUB_SEND,
       PLAYER_QUEUE_BYPASS
     }
 
@@ -82,6 +98,28 @@ public final class Riftbound {
           Action.PLAYER_HUB_SEND.name(),
           // Message
           FastUUID.toString(uuid)
+        );
+      }
+    }
+
+    public void playerHubSend(final UUID uuid, final String server, final boolean async) {
+      if (async) {
+        Rift.instance().redis().async(
+          // Destination
+          Server.BUNGEE.name(),
+          // Action
+          Action.PLAYER_SPECIFIC_HUB_SEND.name(),
+          // Message
+          FastUUID.toString(uuid) + "," + server
+        );
+      } else {
+        Rift.instance().redis().sync(
+          // Destination
+          Server.BUNGEE.name(),
+          // Action
+          Action.PLAYER_SPECIFIC_HUB_SEND.name(),
+          // Message
+          FastUUID.toString(uuid) + "," + server
         );
       }
     }
