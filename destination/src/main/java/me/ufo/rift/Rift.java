@@ -1,6 +1,7 @@
 package me.ufo.rift;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import me.ufo.rift.commands.HubCommand;
 import me.ufo.rift.commands.RiftCommand;
@@ -11,6 +12,7 @@ import me.ufo.rift.obj.RiftServerStatus;
 import me.ufo.rift.permission.PriorityProvider;
 import me.ufo.rift.redis.Redis;
 import me.ufo.rift.redis.Riftbound;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -79,6 +81,30 @@ public final class Rift extends JavaPlugin {
   public void onDisable() {
     this.pingTask.cancel();
     this.redis.close();
+  }
+
+  public void sendAllToHubs() {
+    final List<String> hubs = this.hubs;
+    final int hubsAvailable = hubs.size();
+
+    if (hubsAvailable == 0) {
+      for (final Player player : this.getServer().getOnlinePlayers()) {
+        Riftbound.outbound().playerHubSend(player.getUniqueId(), false);
+      }
+      return;
+    }
+
+    final Iterator<? extends Player> iterator = this.getServer().getOnlinePlayers().iterator();
+
+    int current = 0;
+    while(iterator.hasNext()) {
+      current = current % hubsAvailable;
+      final Player player = iterator.next();
+
+      Riftbound.outbound().playerHubSend(player.getUniqueId(), hubs.get(current), false);
+
+      current++;
+    }
   }
 
   public void info(final String message) {

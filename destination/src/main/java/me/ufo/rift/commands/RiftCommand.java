@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import me.ufo.rift.Rift;
 import me.ufo.rift.redis.Riftbound;
+import me.ufo.rift.util.Style;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 import org.bukkit.ChatColor;
@@ -43,9 +44,11 @@ public final class RiftCommand implements CommandExecutor {
         break;
 
       case "huball":
+        final String out = Style.translate("&cSending all players to a hub...");
         for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
-          Riftbound.outbound().playerHubSend(player.getUniqueId(), false);
+          player.sendMessage(out);
         }
+        this.plugin.sendAllToHubs();
         break;
 
       case "hubs":

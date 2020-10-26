@@ -38,7 +38,7 @@ public final class StopCommand implements CommandExecutor {
 
     if (!this.plugin.getServer().getOnlinePlayers().isEmpty()) {
       sender.sendMessage(ChatColor.RED.toString() + "Sending online players to hub...");
-      this.sendAllToHubs();
+      this.plugin.sendAllToHubs();
 
       this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, () -> {
         if (!this.plugin.getServer().getOnlinePlayers().isEmpty()) {
@@ -54,30 +54,6 @@ public final class StopCommand implements CommandExecutor {
     }
 
     return true;
-  }
-
-  private void sendAllToHubs() {
-    final List<String> hubs = this.plugin.getHubs();
-    final int hubsAvailable = hubs.size();
-
-    if (hubsAvailable == 0) {
-      for (final Player player : this.plugin.getServer().getOnlinePlayers()) {
-        Riftbound.outbound().playerHubSend(player.getUniqueId(), false);
-      }
-      return;
-    }
-
-    final Iterator<? extends Player> iterator = this.plugin.getServer().getOnlinePlayers().iterator();
-
-    int current = 0;
-    while(iterator.hasNext()) {
-      current = current % hubsAvailable;
-      final Player player = iterator.next();
-
-      Riftbound.outbound().playerHubSend(player.getUniqueId(), hubs.get(current), false);
-
-      current++;
-    }
   }
 
 }

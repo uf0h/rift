@@ -67,6 +67,8 @@ public final class Rift extends JavaPlugin {
     this.redis.close();
   }
 
+
+
   public void info(final String message) {
     this.getLogger().info(message);
   }
