@@ -7,6 +7,7 @@
 ### Current Features
 - Synchronized cross-server queues.
 - Hub player load balancing.
+- Whitelisting.
 
 ### Structure
 ##### `bungee`: 
@@ -82,9 +83,11 @@ Rift uses permission based queue priorities.
 #### Commands
 
 ##### Bungee:
-`/brift togglequeue <queue>`: Stops the queue from sending players, but still allows players to join the queue.
+`/brift toggle <queue>`: Stops the queue from sending players, but still allows players to join the queue.
 
 `/brift (set)displayname <queue> <name>`: Set and view the display name of the queue for chat messages.
+
+`/bwhitelist`: Replica of bukkit whitelist command.
 
 ##### Destinations:
 `/hub`: Sends player to the least populated hub.
