@@ -52,7 +52,8 @@ public final class Riftbound {
       PLAYER_INFO_RESPONSE,
       PLAYER_HUB_SEND,
       PLAYER_SPECIFIC_HUB_SEND,
-      PLAYER_QUEUE_BYPASS
+      PLAYER_QUEUE_BYPASS,
+      SERVER_RESTARTING;
     }
 
     public void ping() {
@@ -68,15 +69,14 @@ public final class Riftbound {
       );
     }
 
-    public void playerInfoResponse(final UUID uuid, final String server, final String rank,
-                                  final int priority) {
+    public void restarting() {
       Rift.instance().redis().async(
-        // Destination
-        server,
+        // Channel
+        Server.ALL.name(),
         // Action
-        Action.PLAYER_INFO_RESPONSE.name(),
+        Action.SERVER_RESTARTING.name(),
         // Message
-        FastUUID.toString(uuid) + "," + rank + "," + priority
+        ""
       );
     }
 

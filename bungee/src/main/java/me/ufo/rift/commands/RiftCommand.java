@@ -223,7 +223,7 @@ public final class RiftCommand extends Command {
         }
 
         if (queuing) {
-          out.append("unpaused").color(ChatColor.GREEN);
+          out.append("resumed").color(ChatColor.GREEN);
         } else {
           out.append("paused").color(ChatColor.RED);
         }

@@ -5,6 +5,7 @@ import me.ufo.rift.commands.LeaveQueueCommand;
 import me.ufo.rift.commands.RiftCommand;
 import me.ufo.rift.listeners.RiftInboundListener;
 import me.ufo.rift.obj.RiftServerStatus;
+import me.ufo.rift.permission.PriorityProvider;
 import me.ufo.rift.redis.Redis;
 import me.ufo.rift.redis.Riftbound;
 import org.bukkit.plugin.PluginManager;
@@ -20,6 +21,7 @@ public final class Rift extends JavaPlugin {
   private Redis redis;
   private BukkitTask pingTask;
   private boolean debug;
+
 
   public Rift() {
     this.saveDefaultConfig();
@@ -45,6 +47,8 @@ public final class Rift extends JavaPlugin {
   public void onEnable() {
     instance = this;
 
+    PriorityProvider.setup(this);
+
     // Register commands
     this.getCommand("rift").setExecutor(new RiftCommand(this));
     this.getCommand("joinqueue").setExecutor(new JoinQueueCommand(this));
@@ -66,8 +70,6 @@ public final class Rift extends JavaPlugin {
     this.pingTask.cancel();
     this.redis.close();
   }
-
-
 
   public void info(final String message) {
     this.getLogger().info(message);

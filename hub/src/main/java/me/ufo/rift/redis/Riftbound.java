@@ -28,7 +28,8 @@ public final class Riftbound {
       PING,
       PLAYER_CHANGE_SERVER,
       PLAYER_PROXY_DISCONNECT,
-      PLAYER_INFO_RESPONSE;
+      PLAYER_INFO_RESPONSE,
+      SERVER_RESTARTING;
 
       private static final Action[] values = Action.values();
 
@@ -51,7 +52,8 @@ public final class Riftbound {
       PING,
       PLAYER_INFO_REQUEST,
       PLAYER_QUEUE_JOIN,
-      PLAYER_QUEUE_LEAVE
+      PLAYER_QUEUE_LEAVE,
+      PLAYER_QUEUE_BYPASS;
     }
 
     public void ping() {
@@ -90,23 +92,23 @@ public final class Riftbound {
       );
     }
 
-    public void playerInfoRequest(final UUID uuid, final String destination) {
-      Rift.instance().redis().async(
-        // Channel
-        destination,
-        // Action
-        Action.PLAYER_INFO_REQUEST.name(),
-        // Message
-        FastUUID.toString(uuid)
-      );
-    }
-
     public void playerQueueLeave(final UUID uuid, final String destination) {
       Rift.instance().redis().async(
         // Channel
         Server.BUNGEE.name(),
         // Action
         Action.PLAYER_QUEUE_LEAVE.name(),
+        // Message
+        FastUUID.toString(uuid) + "," + destination
+      );
+    }
+
+    public void playerQueueBypass(final UUID uuid, final String destination) {
+      Rift.instance().redis().async(
+        // Destination
+        Server.BUNGEE.name(),
+        // Action
+        Action.PLAYER_QUEUE_BYPASS.name(),
         // Message
         FastUUID.toString(uuid) + "," + destination
       );

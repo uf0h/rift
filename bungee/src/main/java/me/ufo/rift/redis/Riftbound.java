@@ -31,7 +31,8 @@ public final class Riftbound {
       PLAYER_QUEUE_JOIN,
       PLAYER_HUB_SEND,
       PLAYER_SPECIFIC_HUB_SEND,
-      PLAYER_QUEUE_BYPASS;
+      PLAYER_QUEUE_BYPASS,
+      SERVER_RESTARTING;
 
       private static final Action[] values = Action.values();
 

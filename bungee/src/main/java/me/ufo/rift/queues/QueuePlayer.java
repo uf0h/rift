@@ -60,9 +60,9 @@ public final class QueuePlayer implements Comparable<QueuePlayer> {
   @Override
   public int compareTo(final QueuePlayer o) {
     if (o.getPriority() < this.getPriority()) {
-      return 1;
-    } else if (o.getPriority() > this.getPriority()) {
       return -1;
+    } else if (o.getPriority() > this.getPriority()) {
+      return 1;
     } else {
       if (o.getInsertionTime() < this.getInsertionTime()) {
         return 1;

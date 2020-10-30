@@ -1,6 +1,7 @@
 name: Rift
 version: ${project.version}
 main: me.ufo.rift.Rift
+softdepend: [LuckPerms]
 commands:
   rift:
   joinqueue:

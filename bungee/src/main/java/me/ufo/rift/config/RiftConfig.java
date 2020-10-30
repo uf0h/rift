@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,6 +35,7 @@ public class RiftConfig {
   private final String queuePosition;
   private final String queuePaused;
   private final BaseComponent[] whitelisted;
+  private final String actionbar;
 
   public RiftConfig(final Rift plugin) throws IOException {
     this.plugin = plugin;
@@ -86,7 +86,7 @@ public class RiftConfig {
       this.credentials.setPassword(this.config.getString("redis.auth.password"));
     }
 
-    this.queuePosition = this.config.getStringList("messages.queue-position")
+    this.queuePosition = this.config.getStringList("messages.queue-position.chat")
       .stream().map(s -> ChatColor.translateAlternateColorCodes('&', s))
       .collect(Collectors.joining("\n"));
 
@@ -103,6 +103,14 @@ public class RiftConfig {
     }
 
     this.whitelisted = whitelist.create();
+
+
+    this.actionbar =
+      ChatColor.translateAlternateColorCodes('&', config.getString("messages.queue-position.actionbar"));
+  }
+
+  public String getActionBarMessage() {
+    return actionbar;
   }
 
   public boolean isWhitelisted() {

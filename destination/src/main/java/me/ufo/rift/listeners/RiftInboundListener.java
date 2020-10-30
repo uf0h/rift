@@ -4,7 +4,6 @@ import java.util.Arrays;
 import me.ufo.rift.Rift;
 import me.ufo.rift.events.RiftInboundMessageEvent;
 import me.ufo.rift.redis.Riftbound;
-import me.ufo.rift.util.FastUUID;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -22,13 +21,11 @@ public final class RiftInboundListener implements Listener {
       this.plugin.info(
         "Received riftboundmessage: {source: " + event.getSource() +
         ", action: " + event.getAction() +
-        ", message: " + Arrays.toString(event.getMessage()) + "}"
+        ", message: " + (event.getMessage() == null ? "null" : Arrays.toString(event.getMessage())) + "}"
       );
     }
 
-    if (event.getAction() == Riftbound.Inbound.Action.PLAYER_INFO_REQUEST) {
-      this.plugin.provider().send(event.getSource(), FastUUID.fromString(event.getMessage()[0]));
-    } else if (event.getAction() == Riftbound.Inbound.Action.PING) {
+    if (event.getAction() == Riftbound.Inbound.Action.PING) {
       if ("HUB".equalsIgnoreCase(event.getMessage()[0])) {
         if (!this.plugin.getHubs().contains(event.getSource())) {
           this.plugin.getHubs().add(event.getSource());

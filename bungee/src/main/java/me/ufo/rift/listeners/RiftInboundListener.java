@@ -33,12 +33,19 @@ public final class RiftInboundListener implements Listener {
         this.plugin.info(
           "Received riftboundmessage: {source: " + event.getSource() +
           ", action: " + event.getAction() +
-          ", message: " + Arrays.toString(event.getMessage()) + "}"
+          ", message: " + (event.getMessage() == null ? "null" : Arrays.toString(event.getMessage())) + "}"
         );
       }
 
-      if (event.getAction() == Riftbound.Inbound.Action.PING) {
+      final Riftbound.Inbound.Action action = event.getAction();
+
+      if (action == Riftbound.Inbound.Action.PING) {
         this.ping(event);
+        return;
+      } else if (action == Riftbound.Inbound.Action.SERVER_RESTARTING) {
+        final RiftServer server = RiftServer.fromName(event.getSource());
+
+        server.setServerStatus(RiftServerStatus.RESTARTING);
         return;
       }
 

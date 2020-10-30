@@ -2,7 +2,7 @@ package me.ufo.rift.commands;
 
 import me.ufo.rift.Rift;
 import me.ufo.rift.obj.QueuePlayer;
-import me.ufo.rift.redis.Riftbound;
+import me.ufo.rift.permission.PriorityProvider;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -42,7 +42,7 @@ public final class JoinQueueCommand implements CommandExecutor {
       return false;
     }
 
-    Riftbound.outbound().playerInfoRequest(((Player) sender).getUniqueId(), args[0]);
+    PriorityProvider.get().check(((Player) sender).getUniqueId(), args[0]);
     return true;
   }
 

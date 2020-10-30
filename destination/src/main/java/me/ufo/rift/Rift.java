@@ -6,16 +6,16 @@ import java.util.List;
 import me.ufo.rift.commands.HubCommand;
 import me.ufo.rift.commands.RiftCommand;
 import me.ufo.rift.commands.StopCommand;
+import me.ufo.rift.listeners.LoadListener;
 import me.ufo.rift.listeners.RiftInboundListener;
 import me.ufo.rift.listeners.StopListener;
 import me.ufo.rift.obj.RiftServerStatus;
-import me.ufo.rift.permission.PriorityProvider;
 import me.ufo.rift.redis.Redis;
 import me.ufo.rift.redis.Riftbound;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 public final class Rift extends JavaPlugin {
@@ -25,10 +25,10 @@ public final class Rift extends JavaPlugin {
   private final String name;
   private Redis redis;
   private BukkitTask pingTask;
-  private PriorityProvider provider;
   private boolean registered;
   private boolean debug;
 
+  private boolean loaded;
   private boolean stopping;
   private List<String> hubs;
 
@@ -50,13 +50,6 @@ public final class Rift extends JavaPlugin {
     );
 
     this.redis = new Redis(this);
-
-    this.provider = PriorityProvider.setup(this);
-    if (this.provider == null) {
-      this.severe("No permissions plugin has been detected.");
-      this.getServer().getPluginManager().disablePlugin(this);
-    }
-
     this.hubs = new ArrayList<>(3);
   }
 
@@ -71,16 +64,18 @@ public final class Rift extends JavaPlugin {
     final PluginManager pm = this.getServer().getPluginManager();
     pm.registerEvents(new RiftInboundListener(this), this);
     pm.registerEvents(new StopListener(this), this);
-
-    // Register repeating tasks
-    final BukkitScheduler scheduler = this.getServer().getScheduler();
-    this.pingTask = scheduler.runTaskTimerAsynchronously(this, () -> Riftbound.outbound().ping(), 60L, 60L);
+    pm.registerEvents(new LoadListener(this), this);
   }
 
   @Override
   public void onDisable() {
     this.pingTask.cancel();
+    Riftbound.outbound().restarting();
     this.redis.close();
+  }
+
+  public void enablePingTask() {
+    this.pingTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> Riftbound.outbound().ping(), 0, 60L);
   }
 
   public void sendAllToHubs() {
@@ -129,10 +124,6 @@ public final class Rift extends JavaPlugin {
     return this.redis;
   }
 
-  public PriorityProvider provider() {
-    return this.provider;
-  }
-
   public boolean registered() {
     return this.registered;
   }
@@ -149,6 +140,14 @@ public final class Rift extends JavaPlugin {
   public boolean toggleDebug() {
     this.debug = !this.debug;
     return this.debug;
+  }
+
+  public boolean isLoaded() {
+    return loaded;
+  }
+
+  public void setLoaded(final boolean loaded) {
+    this.loaded = loaded;
   }
 
   public boolean isStopping() {

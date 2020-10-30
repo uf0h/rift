@@ -4,6 +4,7 @@ public enum RiftServerStatus {
 
   ONLINE,
   WHITELISTED,
+  RESTARTING,
   OFFLINE
 
 }

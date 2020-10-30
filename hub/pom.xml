@@ -102,5 +102,30 @@
             <version>5.3.3.RELEASE</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- LUCKPERMS -->
+        <dependency>
+            <groupId>net.luckperms</groupId>
+            <artifactId>api</artifactId>
+            <version>5.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- FEATHERBOARD
+        <dependency>
+            <groupId>be.maximvdw.featherboard</groupId>
+            <artifactId>featherboard</artifactId>
+            <version>4.28.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        MVDWPLACEHOLDERAPI
+        <dependency>
+            <groupId>be.maximvdw</groupId>
+            <artifactId>MVdWPlaceholderAPI</artifactId>
+            <version>3.1.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>-->
     </dependencies>
+
 </project>

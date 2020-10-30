@@ -27,7 +27,7 @@ public final class RiftInboundListener implements Listener {
       this.plugin.info(
         "Received riftboundmessage: {source: " + event.getSource() +
         ", action: " + event.getAction() +
-        ", message: " + Arrays.toString(event.getMessage()) + "}"
+        ", message: " + (event.getMessage() == null ? "null" : Arrays.toString(event.getMessage())) + "}"
       );
     }
 
@@ -43,7 +43,7 @@ public final class RiftInboundListener implements Listener {
         QueuePlayer.getPlayers().remove(QueuePlayer.fromUUID(uuid));
         break;
 
-      case PLAYER_INFO_RESPONSE: {
+      /*case PLAYER_INFO_RESPONSE: {
         QueuePlayer player = QueuePlayer.fromUUID(uuid);
         if (player == null) {
           player = new QueuePlayer(uuid, event.getSource());
@@ -59,7 +59,12 @@ public final class RiftInboundListener implements Listener {
         Riftbound.outbound()
           .playerQueueJoin(uuid, player.getDestination(), player.getRank(), player.getPriority());
         break;
-      }
+      }*/
+
+      case SERVER_RESTARTING:
+
+        break;
+
       default:
         break;
     }
